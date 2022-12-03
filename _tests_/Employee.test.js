@@ -5,9 +5,9 @@ describe("Testing Employee Class", () => {
         //data set up
         const name = "Ana";
         const id = 77;
-        const email = "ana@ana.com"
+        const email = "ana@ana.com";
         // create case
-        const employee = new Employee(name, id, email)
+        const employee = new Employee(name, id, email);
         // make assertion
         expect(employee.name).toBe(name);
         expect(employee.id).toBe(id);
