@@ -6,6 +6,7 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 let employees = [];
 
+
 inquirer
     .prompt([
         {
@@ -56,9 +57,8 @@ const createAnother = function () {
             if (response.options === choices[0]) {
                 console.log("Lets create another");
                 employeeOptions();
-            } else { 
-                // TODO: Run function that will create the html and/or css files. Use employees array to loop through objects and create cards.
-                return console.log(employees) 
+            } else {
+                writeFile();
             }
         }
         );
@@ -158,4 +158,61 @@ const createIntern = function () {
             createAnother();
         }
         );
+};
+
+// Create Function to pull HTML template content as a string and pass through each employee object to create cards and write file.
+const writeFile = function () {
+    const cardArray = [];
+    let cardTemplate = "";
+    const readStart = fs.readFileSync("./src/template.html");
+    const readEnd = fs.readFileSync("./src/template_end.html");
+    const templateStart = readStart.toString();
+    const templateEnd = readEnd.toString();
+
+    for (let i = 0; i < employees.length; i++) {
+        const element = employees[i];
+        const name = element.name;
+        const id = element.id;
+        const email = `<a href="mailto:${element.email}">${element.email}</a>`;
+        if (element instanceof Manager) {
+            var third_field = `Office Number: ${element.officeNumber}`;
+            var type = "Manager";
+        };
+        if (element instanceof Engineer) {
+            var third_field = `GitHub: <a href="https://github.com/${element.github}/" target="_blank" rel="noopener noreferrer">${element.github}</a>`;
+            var type = "Engineer";
+        };
+        if (element instanceof Intern) {
+            var third_field = `School: ${element.school}`;
+            var type = "Intern";
+        };
+        const employeeCard = `
+            <div class="card col-md-4 p-0" style="width: 18rem;">
+                <div class="card-body col bg-secondary">
+                    <header class="bg-dark text-light col justify-content-between y-4">
+                        <p class="m-0 p-2" style="font-size: 20px; font-weight:bold;">${name}</p>
+                        <p class="m-0 p-2" style="font-size: 20px; font-weight:bold;">${type}</p>
+                    </header>
+                    <section>
+                        <div class="card" style="width: 100%;">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Employee ID: ${id}</li>
+                                <li class="list-group-item">Employee Email: ${email}</li>
+                                <li class="list-group-item">${third_field}</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>`;
+        cardTemplate += employeeCard;
+    }
+
+
+    var finalTemplate = templateStart + cardTemplate + templateEnd;
+
+    fs.writeFile('./dist/index.html', finalTemplate, (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+    });
+
 };
