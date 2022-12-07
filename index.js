@@ -55,7 +55,6 @@ const createAnother = function () {
         ])
         .then((response) => {
             if (response.options === choices[0]) {
-                console.log("Lets create another");
                 employeeOptions();
             } else {
                 writeFile();
@@ -105,7 +104,7 @@ const createEngineer = function () {
             },
             {
                 type: 'input',
-                message: 'What is the engineer\'s GitHub username',
+                message: 'What is the engineer\'s GitHub username:',
                 name: 'engineer_github',
             },
         ])
@@ -116,7 +115,6 @@ const createEngineer = function () {
             const github = response.engineer_github;
             const engineer = new Engineer(name, id, email, github);
             employees.push(engineer);
-            console.log(employees);
             createAnother();
         }
         );
@@ -154,7 +152,6 @@ const createIntern = function () {
             const school = response.intern_school;
             const intern = new Intern(name, id, email, school);
             employees.push(intern);
-            console.log(employees);
             createAnother();
         }
         );
